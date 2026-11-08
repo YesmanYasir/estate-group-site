@@ -10,11 +10,11 @@ Build an independently implemented, premium Greek property-discovery website ins
 - Cloudflare Workers via OpenNext, D1 for listing records, R2 for uploaded images. Secrets must remain server-side.
 
 ## Working conventions
-- Apply `.agents/skills/karpathy-guidelines/SKILL.md` before coding. Apply the local `frontend-design` skill for visual implementation and load only relevant references.
+- Apply `.agents/skills/karpathy-guidelines/SKILL.md` before coding. For UI work, use the local `frontend-design`, `emil-design-eng`, `impeccable`, and `design-taste-frontend` skills; follow the incumbent identity in `DESIGN.md` and load only relevant references. After cloning, run `npm run setup:skills` once to restore the locked upstream skills and enable the Impeccable design hook.
 - Read the relevant design and quality skills before changing public flows.
 - Keep public details, prices, photos, availability, company claims, and contact information verifiable. Do not ship demo listing content as real inventory without a visible notice.
 - Every flow must work with keyboard, small screens, clear focus, descriptive image alt text, and reduced motion.
-- Admin authentication is password-based with a signed HttpOnly cookie. Password and session secret are runtime secrets; never commit `.dev.vars`.
+- Admin authentication uses Google OAuth through Auth.js. Only the verified email configured in the `ADMIN_EMAIL` Worker secret is authorized. OAuth credentials and `AUTH_SECRET` are runtime secrets; never commit `.dev.vars`.
 - Use Cloudflare D1/R2 for production persistence; local JSON preview data is not writable persistence.
 - Keep secrets, environment files, node_modules and generated builds out of commits.
 

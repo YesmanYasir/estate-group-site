@@ -4,7 +4,9 @@ export type PropertyFilters = {
   type?: string;
   location?: string;
   category?: string;
+  minPrice?: number | string;
   maxPrice?: number | string;
+  sort?: string;
 };
 
 const categoryNames: Record<string, PropertyType> = {
@@ -24,13 +26,19 @@ export function categoryType(category = "") {
 export function filterProperties(properties: Property[], filters: PropertyFilters = {}) {
   const location = filters.location?.trim().toLocaleLowerCase() || "";
   const category = categoryType(filters.category);
+  const minPrice = filters.minPrice === "" || filters.minPrice == null ? 0 : Number(filters.minPrice);
   const maxPrice = filters.maxPrice === "" || filters.maxPrice == null ? Number.POSITIVE_INFINITY : Number(filters.maxPrice);
-  return properties.filter((property) =>
+  const visible = properties.filter((property) =>
     (filters.type === "all" || !filters.type || property.listingType === filters.type) &&
     (!location || `${property.title} ${property.city}`.toLocaleLowerCase().includes(location)) &&
     (!category || property.propertyType === category) &&
+    (!Number.isFinite(minPrice) || property.price >= minPrice) &&
     (!Number.isFinite(maxPrice) || property.price <= maxPrice)
   );
+  if (filters.sort === "price-asc") return visible.sort((a, b) => a.price - b.price);
+  if (filters.sort === "price-desc") return visible.sort((a, b) => b.price - a.price);
+  if (filters.sort === "newest") return visible.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  return visible;
 }
 
 export function makePropertySlug(title: string) {

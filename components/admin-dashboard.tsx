@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { signOut as authSignOut } from "next-auth/react";
 import type { Property, PropertyType } from "@/types/property";
 import { formatPrice } from "@/lib/format";
 
@@ -70,8 +71,7 @@ export function AdminDashboard() {
   }
 
   async function signOut() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    window.location.reload();
+    await authSignOut({ redirectTo: "/admin" });
   }
 
   async function togglePublication(property: Property) {

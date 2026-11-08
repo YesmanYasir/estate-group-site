@@ -8,12 +8,13 @@ A lightweight, photo-led property website inspired by the supplied luxury-proper
 2. In this folder run `npm.cmd install` then `npm.cmd run dev` (works in Windows CMD and PowerShell even when the PowerShell script wrapper is disabled).
 3. Open `http://localhost:3000`. The homepage is `/`; the admin login is `/admin`.
 
-The public pages use labeled preview listings until real properties are added. To test persistent admin listing creation locally, configure Cloudflare bindings and local secrets as described in [the setup guide](docs/free-deployment.md).
+The public pages use labeled preview listings until real properties are added. Admin access uses Google sign-in restricted to one owner-defined email. To test persistent admin listing creation locally, configure Cloudflare bindings and local secrets as described in [the setup guide](docs/free-deployment.md).
 
 ## Technology
 
 - Next.js App Router, React 19, TypeScript, and small custom CSS.
 - Cloudflare Workers + OpenNext for deployment, D1 for listings, and R2 for photos.
+- Auth.js Google OAuth for private admin access, restricted to one owner-configured Google email.
 - Native CSS and browser scrolling for transitions and carousels. No WebGL/3D or large animation framework is loaded by the public pages.
 - Vitest for unit tests. Agentation remains an optional development-only visual feedback tool.
 - Repository agent profiles live under `.github/agents/`; reusable UI and workflow skills live under `.agents/skills/`.

@@ -1,2 +1,4 @@
-ADMIN_PASSWORD="change-this-long-password"
-SESSION_SECRET="replace-with-at-least-32-random-characters"
+ADMIN_EMAIL="your-google-email@example.com"
+AUTH_GOOGLE_ID="google-oauth-client-id"
+AUTH_GOOGLE_SECRET="google-oauth-client-secret"
+AUTH_SECRET="replace-with-at-least-32-random-characters"

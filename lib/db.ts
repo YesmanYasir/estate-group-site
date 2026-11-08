@@ -1,7 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { Property } from "@/types/property";
 
-export type AppEnv = CloudflareEnv & { DB?: D1Database; PROPERTY_MEDIA?: R2Bucket; ADMIN_PASSWORD?: string; SESSION_SECRET?: string };
+export type AppEnv = CloudflareEnv & { DB?: D1Database; PROPERTY_MEDIA?: R2Bucket; ADMIN_EMAIL?: string };
 export async function getEnv() {
   try { return (await getCloudflareContext({ async: true })).env as AppEnv; }
   catch { return process.env as unknown as AppEnv; }
