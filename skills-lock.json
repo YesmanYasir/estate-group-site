@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "frontend-design": {
+      "source": "aladicf/better-react-web-ui",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "b2d240af34ffd05daa1ab392317ada2e15967a4d8a8c83d4446f2d132e3913c9"
+    }
+  }
+}
