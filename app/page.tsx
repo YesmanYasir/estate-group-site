@@ -2,11 +2,70 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PropertyCard } from "@/components/property-card";
-import { HeroScene } from "@/components/hero-scene";
-import { demoProperties } from "@/lib/demo-properties";
+import { PropertyCarousel } from "@/components/property-carousel";
+import { HomeHero } from "@/components/home-hero";
 import { listProperties } from "@/lib/db";
+import { demoProperties } from "@/lib/demo-properties";
+
 export const dynamic = "force-dynamic";
-export default async function HomePage() { const listings = await listProperties().catch(()=>null); const properties=(listings?.length?listings:demoProperties).slice(0,3); return <><SiteHeader/><main><section className="hero"><div className="hero-copy"><p className="eyebrow">A PLACE, CONSIDERED <span>— GREECE</span></p><h1>Come closer to<br/>the life you <em>imagine.</em></h1><p className="hero-intro">A thoughtful collection of homes, shaped by place and a more personal way of finding your own.</p><div className="hero-actions"><Link className="button button-light" href="/properties">Explore the collection <span>↗</span></Link><a href="#approach" className="text-link">Our point of view <span>↓</span></a></div><div className="hero-caption"><span>01 / 03</span><span>PROPERTY, WITH A SENSE OF PLACE</span></div></div><HeroScene/><div className="hero-edge-note">THE AEGEAN, IN ITS OWN LIGHT</div></section>
-<section className="intro-section" id="approach" data-reveal><p className="eyebrow">A MORE HUMAN WAY HOME</p><div className="intro-grid"><h2>Not just a place<br/>to live. A place<br/>to <em>belong.</em></h2><div className="intro-copy"><p>Finding a home is about more than a set of rooms. It is about the pace of a neighbourhood, the quality of light, and knowing the people who can help you see what makes a place right.</p><Link className="text-link dark" href="/properties">How we work <span>↗</span></Link></div></div></section>
-<section className="featured-section" data-reveal><div className="section-heading"><div><p className="eyebrow">THE COLLECTION / 01</p><h2>Places with <em>presence.</em></h2></div><Link className="text-link dark" href="/properties">View all properties <span>↗</span></Link></div>{properties.some(p=>p.demo)&&<p className="preview-notice">Preview listings — replace with verified property content before launch.</p>}<div className="property-grid">{properties.map((p,i)=><PropertyCard key={p.id} property={p} index={i}/>)}</div></section>
-<section className="statement" data-reveal><span>“</span><p>Real estate becomes personal<br/>when you start with the <em>place.</em></p><small>AIM / ESTATE GROUP — OUR APPROACH</small></section></main><SiteFooter/></>; }
+
+const propertyTypes = [
+  { name: "Apartments", detail: "City living", icon: "▦" },
+  { name: "Houses", detail: "Room to settle", icon: "⌂" },
+  { name: "Villas", detail: "A life outdoors", icon: "⌂" },
+  { name: "Penthouses", detail: "Above it all", icon: "▤" },
+  { name: "Land", detail: "Start with a view", icon: "◇" },
+  { name: "Developments", detail: "A new perspective", icon: "▥" },
+];
+
+export default async function HomePage() {
+  const stored = await listProperties().catch(() => null);
+  const properties = (stored?.length ? stored : demoProperties).slice(0, 8);
+  const featured = properties.slice(0, 5);
+
+  return <>
+    <SiteHeader overlay />
+    <main>
+      <HomeHero properties={properties} />
+
+      <section className="collection-section" id="selected-homes" aria-labelledby="collection-title">
+        <div className="section-heading collection-heading">
+          <div>
+            <p className="eyebrow"><span className="eyebrow-rule" /> A CLOSER LOOK</p>
+            <h2 id="collection-title">Exceptional homes, <em>selected for you.</em></h2>
+          </div>
+          <Link href="/properties" className="section-link">Explore all homes <span aria-hidden="true">↗</span></Link>
+        </div>
+        {featured.some((property) => property.demo) && <p className="preview-notice">Sample listings shown for preview. Replace with verified property details before launch.</p>}
+        <PropertyCarousel properties={featured} />
+      </section>
+
+      <section className="types-section" aria-labelledby="types-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow"><span className="eyebrow-rule" /> FIND YOUR KIND OF PLACE</p>
+            <h2 id="types-title">Every way to <em>feel at home.</em></h2>
+          </div>
+          <Link href="/properties" className="section-link">Browse the collection <span aria-hidden="true">↗</span></Link>
+        </div>
+        <div className="type-grid">
+          {propertyTypes.map(({ name, detail, icon }) => (
+            <Link className="type-card" key={name} href={`/properties?category=${encodeURIComponent(name)}`}>
+              <span className="type-icon" aria-hidden="true">{icon}</span>
+              <span className="type-name">{name}</span>
+              <span className="type-detail">{detail}</span>
+              <span className="type-arrow" aria-hidden="true">↗</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="seller-banner" id="sell-with-us">
+        <div><p className="eyebrow">SELL WITH AIM</p><h2>Your home deserves<br />the <em>right audience.</em></h2></div>
+        <p>Tell us a little about your property. Our team will help you decide what comes next.</p>
+        <Link className="seller-link" href="/admin">List your property <span aria-hidden="true">↗</span></Link>
+      </section>
+    </main>
+    <SiteFooter />
+  </>;
+}

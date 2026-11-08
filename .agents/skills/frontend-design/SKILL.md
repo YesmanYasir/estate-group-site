@@ -9,14 +9,14 @@ metadata:
 
 # Frontend design for this project
 
-Use for all React page and component design work. Read `AGENTS.md`, `DESIGN.md`, and the relevant current code first. This project uses Next.js App Router, React 19, TypeScript, Tailwind CSS 4, R3F, and a premium Greek real-estate identity.
+Use for all React page and component design work. Read `AGENTS.md`, `DESIGN.md`, and the relevant current code first. This project uses Next.js App Router, React 19, TypeScript, custom CSS, and a premium Greek real-estate identity.
 
 ## Priorities
 
-- Preserve the creative idea **The Mediterranean, drawn in light**: limestone, mineral pine, copper, restrained sea-glass, editorial typography, precise rules, generous photography. Do not drift into a generic luxury template.
+- Follow the current creative direction in `DESIGN.md`: reference-inspired home discovery with AIM's own identity, legible photo-first composition, and restrained editorial typography.
 - Make property exploration and owner listing creation obvious. Keep content truthful; never invent property facts, credentials, reviews, contact details, or scarcity. Preserve explicit preview notices.
 - Build working interactions and cover mobile, empty, error, and success states. Prefer semantic HTML and existing project components.
-- Keep all core text and CTAs in HTML. Keep the 3D hero client-only and decorative with an accessible fallback.
+- Keep the hero as one responsive property photo with a contrast overlay; do not add 3D, video, or autoplay.
 - Check keyboard access, visible focus, labels, contrast, descriptive image alt, zoom, responsive layouts, and reduced-motion behavior.
 - Verify in the target project. Report only the build, browser, accessibility, and performance checks actually completed.
 

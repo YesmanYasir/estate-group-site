@@ -9,7 +9,7 @@ export async function getEnv() {
 export function rowToProperty(row: Record<string, unknown>): Property {
   return {
     id: String(row.id), slug: String(row.slug), title: String(row.title), city: String(row.city),
-    listingType: row.listing_type as Property["listingType"], status: row.status as Property["status"],
+    listingType: row.listing_type as Property["listingType"], propertyType: String(row.property_type || "Villa") as Property["propertyType"], status: row.status as Property["status"],
     price: Number(row.price), currency: String(row.currency), bedrooms: Number(row.bedrooms),
     bathrooms: Number(row.bathrooms), area: Number(row.area), coverUrl: String(row.cover_url), alt: String(row.alt),
     description: String(row.description), features: JSON.parse(String(row.features_json || "[]")), createdAt: String(row.created_at || "")

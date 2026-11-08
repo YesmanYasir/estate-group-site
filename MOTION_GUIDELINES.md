@@ -1,6 +1,6 @@
 # Motion guidelines
 
-- Lenis remains a thin enhancement to native scrolling and is disabled for `prefers-reduced-motion`.
-- GSAP + ScrollTrigger handles small opacity/transform reveals only. Use `@gsap/react` cleanup; do not hijack scroll.
-- Framer Motion owns menu and UI-state transitions only. Do not animate an element simultaneously with GSAP.
-- Theatre.js core/Studio is a local authoring option for a future composed camera timeline. The studio package is dev-only and must never enter production client bundles; the initial home model remains deliberately lightweight.
+- Keep motion optional and short; use CSS transitions for hover and image changes.
+- Keep browser scrolling native. Do not hijack the wheel or add continuous animation loops.
+- Honor `prefers-reduced-motion`; remove nonessential image and card movement for reduced-motion users.
+- Carousels must also have labeled previous/next buttons, keyboard-operable links, and touch scroll.

@@ -1,10 +1,10 @@
 # Creative direction
 
 ## Point of view
-A Greek home is read through light, terrain, and the rhythm of a neighbourhood. Use a refined architectural maquette and topographic line motif to suggest place and perspective. Property discovery stays practical and direct.
+Make the first decision effortless: see a compelling home, set a few clear search filters, and browse a curated collection. Follow the visual rhythm of the supplied reference while using AIM's own identity, verified listings, and imagery.
 
 ## Avoid
-Generic full-bleed villa hero, fake claims, invented inventory, glittering gold gradients, glassmorphism, cursor gimmicks, perpetual particles, scroll hijacking, or 3D that obscures listings.
+Unreadable text over busy photos, fake claims, invented inventory, glittering gold gradients, glassmorphism, cursor gimmicks, perpetual particles, scroll hijacking, unnecessary 3D, or hidden admin access.
 
 ## Hero copy direction
-Eyebrow: “A place, considered — Greece.” Headline: “Come closer to the life you imagine.” CTA: “Explore the collection.” Coordinates are decorative and must never imply a real property location.
+Use concise language about finding a home in Greece. The hero search is the primary action; the featured home is secondary. Keep all property facts sourced from the actual listing record.

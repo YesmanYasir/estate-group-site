@@ -1,18 +1,46 @@
-# Free-first deployment: Cloudflare Workers + D1 + R2
+# Setup, admin, and free-first deployment
 
-The domain registration remains with your current registrar. Cloudflare account setup is required because the website needs a runtime, database, and image storage. CRM or an external CMS account is not required. Free-plan quotas apply and can change; monitor them.
+The site runs on Cloudflare Workers. D1 stores property records and R2 stores uploaded photos. You do not need a separate CRM, CMS, or paid database account. Cloudflare's free quotas are intended for modest traffic and can change; check [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/) and [D1 pricing](https://developers.cloudflare.com/d1/platform/pricing/) before launch. Your existing domain registration stays with its registrar.
 
-## One-time setup
-1. Create a Cloudflare account and add the existing domain (the domain itself is not free). Carefully review imported DNS; preserve MX, SPF, DKIM and DMARC records before changing nameservers.
-2. Install dependencies: `npm install`. Create a D1 database named `estate-group` and an R2 bucket named `estate-group-media`.
-3. Replace the placeholder `database_id` in `wrangler.jsonc` with the ID shown in the Cloudflare dashboard.
-4. Apply schema: `npx wrangler d1 migrations apply estate-group --remote`.
-5. Configure `ADMIN_PASSWORD` and `SESSION_SECRET` as Worker secrets using `npx wrangler secret put ADMIN_PASSWORD` and `npx wrangler secret put SESSION_SECRET`. Use a unique long password and a random secret of at least 32 characters. For local work copy `.dev.vars.example` to `.dev.vars` and change both values. Never commit `.dev.vars`. Apply the local schema with `npx wrangler d1 migrations apply estate-group --local` before testing admin persistence. Login attempts are limited to 8 per IP per 15 minutes when D1 is connected.
-6. Local preview: `npm run dev` (Next.js) or `npm run cf:preview` (production-like Worker runtime).
-7. Deploy using `npm run cf:deploy`, or connect GitHub to Cloudflare Workers Builds and use `npm run cf:deploy` as the build/deploy command.
-8. Add the custom domain in Workers & Pages after deployment. Confirm certificate and canonical host.
+## Deploy (one-time setup)
 
-## How listings work
-Open `/admin`, sign in with `ADMIN_PASSWORD`, upload a cover image (up to 8 MB) or paste an HTTPS image URL, and save. New listings are drafts. Use Publish to show a listing publicly; Unpublish returns it to draft. Images go to R2; property details go to D1.
+1. Create a Cloudflare account and install Node.js 20.9 or newer.
+2. In the repository folder, run:
 
-The free plans are subject to quotas and change. Cloudflare currently documents D1 prototype/experiment use on the Workers Free plan. Vercel's Hobby plan is limited to personal non-commercial use, so it may not be eligible for a business site. Verify current terms and quotas before launch.
+   ```cmd
+   npm.cmd install
+   npx.cmd wrangler login
+   npm.cmd run setup:cloudflare
+   ```
+
+   The setup command creates the D1 database and R2 photo bucket, applies both database migrations, asks you to choose an admin password, and saves secrets directly to Cloudflare. It updates `wrangler.jsonc` with the database ID. Keep that file in Git; do not commit `.dev.vars` or passwords.
+
+3. Deploy:
+
+   ```cmd
+   npm.cmd run cf:deploy
+   ```
+
+4. In Cloudflare, add your custom domain under **Workers & Pages → estate-group-site → Settings → Domains & Routes**. If Cloudflare asks you to move DNS, preserve existing MX, SPF, DKIM, and DMARC records so company email keeps working.
+
+## Add a home
+
+Open `https://your-domain/admin`, enter the admin password you chose, and use **Add a home**. Enter the title, location, type, sale/rent, price, photo, and short description. New homes publish immediately; open **More details** to save as a draft or add bedrooms, bathrooms, area, and features. Use the Properties list to unpublish or republish.
+
+For a photo upload, R2 must be connected (the setup command does this). A direct HTTPS image URL is also accepted. Sample properties on the public site are clearly labeled and are fallback preview content only; replace them with verified listings before launch.
+
+## Preview locally
+
+- `npm run dev` starts the visual preview at `http://localhost:3000`. It uses sample listings; admin changes are not persistent without a database.
+- To try the admin locally after the one-time Cloudflare setup, copy `.dev.vars.example` to `.dev.vars`, enter your chosen local secrets, then run:
+
+  ```cmd
+  npx.cmd wrangler d1 migrations apply estate-group --local
+  npm.cmd run cf:preview
+  ```
+
+  This uses local development copies of D1 and R2. It does not alter production listings.
+
+## Changes after setup
+
+Push the change to GitHub, then run `npm.cmd run cf:deploy` from the project folder, or connect the repository to Cloudflare Workers Builds and use `npm run cf:deploy` as its build/deploy command. Cloudflare Workers has free daily request limits and D1/R2 have included free usage; exceeding included quotas may require reducing usage or choosing a paid plan. The domain itself is already owned/paid for separately.

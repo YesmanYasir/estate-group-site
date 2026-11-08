@@ -1,5 +1,22 @@
 "use client";
+
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-export function SiteHeader() { const [open,setOpen]=useState(false); return <header className="site-header"><Link className="wordmark" href="/" aria-label="AIM Estate Group home">AIM<span> / </span>ESTATE GROUP</Link><nav aria-label="Main navigation"><Link href="/properties">Properties</Link><a href="/#approach">Our approach</a><a href="/#contact">Contact</a></nav><Link className="header-cta" href="/properties">Discover a home <span>↗</span></Link><button className="menu-button" aria-label={open?"Close navigation":"Open navigation"} aria-expanded={open} onClick={()=>setOpen(!open)}>{open?"×":"☰"}</button><AnimatePresence>{open&&<motion.nav className="mobile-nav" aria-label="Mobile navigation" initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} transition={{duration:.22}}><Link href="/properties" onClick={()=>setOpen(false)}>Properties ↗</Link><a href="/#approach" onClick={()=>setOpen(false)}>Our approach ↗</a><a href="/#contact" onClick={()=>setOpen(false)}>Contact ↗</a></motion.nav>}</AnimatePresence></header>; }
+
+export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
+  const [open, setOpen] = useState(false);
+  return <header className={`site-header${overlay ? " is-overlay" : ""}`}>
+    <Link className="wordmark" href="/" aria-label="AIM Estate Group home">AIM <span>ESTATE GROUP</span></Link>
+    <nav className="desktop-nav" aria-label="Main navigation">
+      <Link href="/properties">Find a home</Link>
+      <a href="/#sell-with-us">Sell with us</a>
+      <Link href="/admin">Log in</Link>
+    </nav>
+    <button className="menu-button" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen((value) => !value)}>{open ? "×" : "☰"}</button>
+    {open && <nav id="mobile-nav" className="mobile-nav" aria-label="Mobile navigation">
+      <Link href="/properties" onClick={() => setOpen(false)}>Find a home</Link>
+      <a href="/#sell-with-us" onClick={() => setOpen(false)}>Sell with us</a>
+      <Link href="/admin" onClick={() => setOpen(false)}>Admin log in</Link>
+    </nav>}
+  </header>;
+}

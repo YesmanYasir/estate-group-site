@@ -1,8 +1,8 @@
 ---
 name: 3d-experience
-description: Use when implementing or reviewing the site's Three.js / React Three Fiber experience.
+description: Use to assess a request for 3D and weigh its value against page weight and accessibility.
 ---
 
-# 3D experience
+# 3D experience review
 
-Read `3D_GUIDELINES.md` and `PERFORMANCE.md`. Inspect the current scene and the visitor task. Keep primary text and navigation semantic HTML, load Canvas client-only, limit DPR/model complexity, provide fallback content, and account for keyboard, touch, reduced-motion, and WebGL failure. Measure before tuning or adding rendering complexity.
+Read `PERFORMANCE.md`. This site deliberately has no 3D renderer. First ask whether a real visitor task needs 3D; if not, keep the site photo-led. Only implement 3D after the owner explicitly requests it. If approved, keep core text in HTML, load rendering client-only, provide a real fallback, and measure device cost.

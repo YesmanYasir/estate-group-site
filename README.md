@@ -1,24 +1,31 @@
-# AIM Estate Group website
+# AIM Estate Group
 
-A premium, editorial property-discovery website with an accessible Three.js/R3F architectural hero and a simple custom `/admin` listing editor. The visual direction references Mediterranean architecture and light without copying the reference website's code or assets.
+A lightweight, photo-led property website inspired by the supplied luxury-property reference: full-bleed hero photography, a clear search bar, featured homes, browse-by-type cards, listing details, and a visible admin sign-in. The implementation uses its own copy, identity, and imagery; it does not copy the reference site's source or assets.
 
-## Local preview
+## Run locally
 
-- Node.js 20.9+
-- `npm install`
-- Copy `.dev.vars.example` to `.dev.vars` and choose private secrets.
-- Configure local Cloudflare resources in `wrangler.jsonc`, copy `.dev.vars.example` to `.dev.vars`, and apply the D1 migration with `npx wrangler d1 migrations apply estate-group --local`. Without migration data the public pages still show preview listings, but admin saves are not available.
-- Open `http://localhost:3000`; admin is at `/admin`.
+1. Install Node.js 20.9 or newer.
+2. In this folder run `npm.cmd install` then `npm.cmd run dev` (works in Windows CMD and PowerShell even when the PowerShell script wrapper is disabled).
+3. Open `http://localhost:3000`. The homepage is `/`; the admin login is `/admin`.
 
-For full-stack deployment steps see [`docs/free-deployment.md`](docs/free-deployment.md). The current demo listings are illustrative and must be replaced with owner-verified details before launch.
+The public pages use labeled preview listings until real properties are added. To test persistent admin listing creation locally, configure Cloudflare bindings and local secrets as described in [the setup guide](docs/free-deployment.md).
 
-## Stack and repos
+## Technology
 
-- [Next.js](https://github.com/vercel/next.js) + React/TypeScript + [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss)
-- [Three.js](https://github.com/mrdoob/three.js), [React Three Fiber](https://github.com/pmndrs/react-three-fiber), [Drei](https://github.com/pmndrs/drei)
-- [GSAP](https://github.com/greensock/GSAP), [Framer Motion](https://github.com/motiondivision/motion), [Lenis](https://github.com/darkroomengineering/lenis), [Theatre.js](https://github.com/theatre-js/theatre) (dev-time animation authoring only)
-- [Zustand](https://github.com/pmndrs/zustand) for shared listing-filter state
-- [Better React Web UI](https://github.com/aladicf/better-react-web-ui) `frontend-design` skill installed in `.agents/skills/frontend-design/`
-- [Agentation](https://github.com/benjitaylor/agentation) remains a development visual-feedback helper.
+- Next.js App Router, React 19, TypeScript, and small custom CSS.
+- Cloudflare Workers + OpenNext for deployment, D1 for listings, and R2 for photos.
+- Native CSS and browser scrolling for transitions and carousels. No WebGL/3D or large animation framework is loaded by the public pages.
+- Vitest for unit tests. Agentation remains an optional development-only visual feedback tool.
+- Repository agent profiles live under `.github/agents/`; reusable UI and workflow skills live under `.agents/skills/`.
 
-The repository stores five role profiles in `.github/agents/` and reusable project guidance under `.agents/skills/`. They guide AI coding tools; they are not continuously running hosted agents.
+## Useful commands
+
+```cmd
+npm.cmd run dev
+npm.cmd test
+npm.cmd run build
+npm.cmd run cf:preview
+npm.cmd run cf:deploy
+```
+
+See [free deployment and admin setup](docs/free-deployment.md) before publishing. Replace sample listings and verify company contact details first.

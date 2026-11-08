@@ -1,8 +1,8 @@
 ---
 name: motion-design
-description: Use when adding transitions, scroll reveals, camera movement, or smooth scrolling.
+description: Use when adding restrained interface transitions or carousel behavior.
 ---
 
 # Motion design
 
-Read `MOTION_GUIDELINES.md`. Assign each animated element to one system only. Use `@gsap/react` for scoped GSAP cleanup, synchronize Lenis with ScrollTrigger, use Framer Motion for discrete UI state, and keep native scrolling. Preserve all content under reduced motion. Avoid scroll locking or motion that delays the primary action.
+Read `MOTION_GUIDELINES.md`. Use native browser scrolling and short CSS transitions only. Preserve content and controls under reduced motion. Avoid scroll hijacking, continuous animation, and adding a dependency for simple UI feedback.

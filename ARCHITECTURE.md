@@ -1,13 +1,13 @@
 # Architecture
 
 ## Runtime
-Next.js App Router renders the marketing pages, property details, and `/admin`. Route handlers use Cloudflare bindings through OpenNext. D1 stores structured listing data; R2 stores uploaded images. Public routes read only published records.
+Next.js App Router serves the homepage, searchable property collection, property details, and `/admin`. The homepage and property pages render on the server; small client components handle the hero controls, search, carousel, mobile navigation, and admin form. No 3D renderer or large motion library is shipped to visitors.
 
-## Data and fallback
-`migrations/0001_properties.sql` defines property records. `lib/demo-properties.ts` provides clearly tagged sample content until the owner enters verified listings. The public pages use the database when configured and retain previews for local setup.
+## Data and images
+Cloudflare D1 stores listing metadata and publication status. Cloudflare R2 stores uploaded listing images. `migrations/0001_properties.sql` creates listings/admin rate-limit records; `0002_property_type.sql` adds property categories. Public routes query published listings. Clearly labeled sample properties make the design previewable before database setup.
 
-## Admin path
-`/admin` uses `ADMIN_PASSWORD` and `SESSION_SECRET`; login creates a 7-day signed HttpOnly, SameSite=Strict cookie. Admin API routes check that signature before reading or changing D1/R2. New records start as drafts; publishing/unpublishing controls public visibility. Image uploads allow common image formats up to 8 MB and save in R2.
+## Admin
+`/admin` is linked in the main navigation and footer. `ADMIN_PASSWORD` and `SESSION_SECRET` are Cloudflare Worker secrets. Login issues a seven-day signed HttpOnly, SameSite=Strict cookie. The admin API verifies the signature before reading or writing. A new listing can publish immediately or remain a draft; D1 stores fields, and uploads go to R2.
 
 ## Deployment
-The supported full-stack target is Cloudflare Workers using OpenNext, D1, and R2. Cloudflare currently recommends vinext for new Next.js projects, while OpenNext remains documented and is used here to preserve native Next.js development/build compatibility; check the migration status before a future platform update. Vercel Hobby is preview-only for personal non-commercial use.
+OpenNext builds the Next.js site for Cloudflare Workers. The `setup:cloudflare` command creates resources, applies migrations, and configures secrets. Then `cf:deploy` publishes the Worker. See `docs/free-deployment.md`.
