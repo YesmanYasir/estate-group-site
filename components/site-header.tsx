@@ -18,13 +18,13 @@ export function SiteHeader({ overlay = false, locale = "en" }: { overlay?: boole
     </Link>
     <nav className="desktop-nav" aria-label="Main navigation">
       <Link href="/properties">{t(locale,"find")}</Link><Link href="/golden-visa">{t(locale,"golden")}</Link>
-      <Link href="/submit-property">{t(locale,"submit")}</Link><Link href="/admin">{t(locale,"admin")}</Link>
+      <Link href="/submit-property">{t(locale,"submit")}</Link>
       <label className="language-select"><span className="sr-only">Language</span><select aria-label="Language" value={locale} onChange={(event) => setLocale(event.target.value)}><option value="en">EN</option><option value="tr">TR</option><option value="el">EL</option></select></label>
     </nav>
     <button className="menu-button" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen((value) => !value)}>{open ? "×" : "☰"}</button>
     {open && <nav id="mobile-nav" className="mobile-nav" aria-label="Mobile navigation">
       <Link href="/properties" onClick={() => setOpen(false)}>{t(locale,"find")}</Link><Link href="/golden-visa" onClick={() => setOpen(false)}>{t(locale,"golden")}</Link>
-      <Link href="/submit-property" onClick={() => setOpen(false)}>{t(locale,"submit")}</Link><Link href="/admin" onClick={() => setOpen(false)}>{t(locale,"admin")}</Link>
+      <Link href="/submit-property" onClick={() => setOpen(false)}>{t(locale,"submit")}</Link>
       <label className="language-select"><span>Language</span><select aria-label="Language" value={locale} onChange={(event) => setLocale(event.target.value)}><option value="en">English</option><option value="tr">Türkçe</option><option value="el">Ελληνικά</option></select></label>
     </nav>}
   </header>;
