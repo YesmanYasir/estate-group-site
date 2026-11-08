@@ -12,9 +12,9 @@ export function PropertyCard({ property, index = 0, compact = false, locale = "e
     </Link>
     <div className="property-meta"><div><p className="eyebrow">{property.city}</p><h3><Link href={`/property/${property.slug}`}>{property.title}</Link></h3></div><p className="price">{formatPrice(property.price, property.currency, property.listingType)}</p></div>
     <ul className="property-specs" aria-label="Property details">
-      <li><SpecIcon type="bed"/><span className="spec-value">{property.bedrooms}</span><span className="spec-label">{t(locale,"beds")}</span></li>
-      <li><SpecIcon type="bath"/><span className="spec-value">{property.bathrooms}</span><span className="spec-label">{t(locale,"baths")}</span></li>
-      <li><SpecIcon type="area"/><span className="spec-value">{property.area.toLocaleString(locale === "tr" ? "tr-TR" : locale === "el" ? "el-GR" : "en-IE")}</span><span className="spec-label">{t(locale,"areaSuffix")}</span></li>
+      <li><span className="spec-icon-wrap"><SpecIcon type="bed"/></span><span className="spec-copy"><strong className="spec-value">{property.bedrooms}</strong><small className="spec-label">{t(locale,"beds")}</small></span></li>
+      <li><span className="spec-icon-wrap"><SpecIcon type="bath"/></span><span className="spec-copy"><strong className="spec-value">{property.bathrooms}</strong><small className="spec-label">{t(locale,"baths")}</small></span></li>
+      <li><span className="spec-icon-wrap"><SpecIcon type="area"/></span><span className="spec-copy"><strong className="spec-value">{property.area.toLocaleString(locale === "tr" ? "tr-TR" : locale === "el" ? "el-GR" : "en-IE")}</strong><small className="spec-label">{t(locale,"areaSuffix")}</small></span></li>
       <li className="spec-detail-link"><Link href={`/property/${property.slug}`} aria-label={`View details for ${property.title}`} className="arrow-link"><ArrowIcon/></Link></li>
     </ul>
   </article>;

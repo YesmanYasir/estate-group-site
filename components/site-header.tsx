@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import { StyledSelect } from "@/components/styled-select";
 
 export function SiteHeader({ overlay = false, locale = "en" }: { overlay?: boolean; locale?: Locale }) {
   const [open, setOpen] = useState(false);
@@ -19,13 +20,13 @@ export function SiteHeader({ overlay = false, locale = "en" }: { overlay?: boole
     <nav className="desktop-nav" aria-label="Main navigation">
       <Link href="/properties">{t(locale,"find")}</Link><Link href="/golden-visa">{t(locale,"golden")}</Link>
       <Link href="/submit-property">{t(locale,"submit")}</Link>
-      <label className="language-select"><span className="sr-only">Language</span><select aria-label="Language" value={locale} onChange={(event) => setLocale(event.target.value)}><option value="en">EN</option><option value="tr">TR</option><option value="el">EL</option></select></label>
+      <span className="language-select"><StyledSelect className="language-dropdown" ariaLabel="Language" value={locale} onChange={setLocale} options={[{value:"en",label:"EN"},{value:"tr",label:"TR"},{value:"el",label:"EL"}]}/></span>
     </nav>
     <button className="menu-button" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="mobile-nav" onClick={() => setOpen((value) => !value)}>{open ? "×" : "☰"}</button>
     {open && <nav id="mobile-nav" className="mobile-nav" aria-label="Mobile navigation">
       <Link href="/properties" onClick={() => setOpen(false)}>{t(locale,"find")}</Link><Link href="/golden-visa" onClick={() => setOpen(false)}>{t(locale,"golden")}</Link>
       <Link href="/submit-property" onClick={() => setOpen(false)}>{t(locale,"submit")}</Link>
-      <label className="language-select"><span>Language</span><select aria-label="Language" value={locale} onChange={(event) => setLocale(event.target.value)}><option value="en">English</option><option value="tr">Türkçe</option><option value="el">Ελληνικά</option></select></label>
+      <div className="mobile-language-select"><span>Language</span><StyledSelect className="language-dropdown" ariaLabel="Language" value={locale} onChange={setLocale} options={[{value:"en",label:"English"},{value:"tr",label:"Türkçe"},{value:"el",label:"Ελληνικά"}]}/></div>
     </nav>}
   </header>;
 }

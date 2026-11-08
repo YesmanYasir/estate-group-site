@@ -7,6 +7,7 @@ import type { Property } from "@/types/property";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
+import { StyledSelect } from "@/components/styled-select";
 
 export function HomeHero({ properties, locale = "en" }: { properties: Property[]; locale?: Locale }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -32,8 +33,8 @@ export function HomeHero({ properties, locale = "en" }: { properties: Property[]
       <h1>{t(locale,"heroTitle")} <em>{t(locale,"heroEm")}</em></h1>
       <p className="hero-subtitle">{t(locale,"heroCopy")}</p>
       <form className="hero-search" onSubmit={search} aria-label={t(locale,"search")}>
-        <label><span className="sr-only">{t(locale,"offer")}</span><select value={listingType} onChange={(event) => setListingType(event.target.value)}><option value="sale">{t(locale,"sale")}</option><option value="rent">{t(locale,"rent")}</option><option value="golden_visa">{t(locale,"golden")}</option></select></label>
-        <label><span className="sr-only">{t(locale,"maxPrice")}</span><select value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)}><option value="">{locale==="tr"?"Her fiyat":locale==="el"?"Κάθε τιμή":"Any price"}</option><option value="500000">{locale==="tr"?"En fazla":"Up to"} €500,000</option><option value="1000000">{locale==="tr"?"En fazla":"Up to"} €1,000,000</option><option value="2000000">{locale==="tr"?"En fazla":"Up to"} €2,000,000</option><option value="5000000">{locale==="tr"?"En fazla":"Up to"} €5,000,000</option></select></label>
+        <label className="hero-search-dropdown"><span className="sr-only">{t(locale,"offer")}</span><StyledSelect className="hero-search-select" ariaLabel={t(locale,"offer")} value={listingType} onChange={setListingType} options={[{value:"sale",label:t(locale,"sale")},{value:"rent",label:t(locale,"rent")},{value:"golden_visa",label:t(locale,"golden")}]} /></label>
+        <label className="hero-search-dropdown"><span className="sr-only">{t(locale,"maxPrice")}</span><StyledSelect className="hero-search-select" ariaLabel={t(locale,"maxPrice")} value={maxPrice} onChange={setMaxPrice} options={[{value:"",label:locale==="tr"?"Her fiyat":locale==="el"?"Κάθε τιμή":"Any price"},...([500000,1000000,2000000,5000000].map((price)=>({value:String(price),label:`${locale==="tr"?"En fazla":locale==="el"?"Έως":"Up to"} €${price.toLocaleString("en-IE")}`})))]} /></label>
         <label className="location-field"><span className="sr-only">{t(locale,"location")}</span><input value={location} onChange={(event) => setLocation(event.target.value)} placeholder={t(locale,"location")} autoComplete="address-level2" /></label>
         <button type="submit">{t(locale,"search")} <span aria-hidden="true">⌕</span></button>
       </form>
