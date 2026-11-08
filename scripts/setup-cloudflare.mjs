@@ -7,7 +7,12 @@ import { stdin, stdout } from "node:process";
 const npx = process.platform === "win32" ? "npx.cmd" : "npx";
 function run(args, { input } = {}) {
   try {
-    return execFileSync(npx, ["wrangler", ...args], { encoding: "utf8", input, stdio: ["pipe", "pipe", "pipe"] });
+    return execFileSync(npx, ["wrangler", ...args], {
+      encoding: "utf8",
+      input,
+      stdio: ["pipe", "pipe", "pipe"],
+      shell: process.platform === "win32",
+    });
   } catch (error) {
     const detail = [error.stdout, error.stderr, error.message].filter(Boolean).join("\n");
     throw new Error(detail.trim());
@@ -16,7 +21,11 @@ function run(args, { input } = {}) {
 
 console.log("Cloudflare setup — this creates the free database and image bucket for your site.\n");
 try { run(["whoami"]); }
-catch { console.error("First sign in to Cloudflare with: npx wrangler login"); process.exit(1); }
+catch (error) {
+  console.error("Cloudflare authentication check failed:", error.message);
+  console.error("Check the login with: npx wrangler whoami");
+  process.exit(1);
+}
 
 let config = readFileSync("wrangler.jsonc", "utf8");
 const dbId = config.match(/"database_id"\s*:\s*"([^"]+)"/)?.[1];
