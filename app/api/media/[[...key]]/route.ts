@@ -1,0 +1,3 @@
+import { getEnv } from "@/lib/db";
+export const runtime="nodejs"; export const dynamic="force-dynamic";
+export async function GET(_request:Request,{params}:{params:Promise<{key?:string[]}>}){const env=await getEnv();if(!env.PROPERTY_MEDIA)return new Response("Media storage unavailable",{status:404});const {key=[]}=await params;const object=await env.PROPERTY_MEDIA.get(key.join("/"));if(!object)return new Response("Not found",{status:404});return new Response(object.body,{headers:{"content-type":object.httpMetadata?.contentType||"application/octet-stream","cache-control":"public, max-age=31536000, immutable"}});}
