@@ -34,7 +34,6 @@ export default async function HomePage() {
             <p className="eyebrow"><span className="eyebrow-rule" /> A CLOSER LOOK</p>
             <h2 id="collection-title">Exceptional homes, <em>selected for you.</em></h2>
           </div>
-          <Link href="/properties" className="section-link">Explore all homes <span aria-hidden="true">↗</span></Link>
         </div>
         {featured.some((property) => property.demo) && <p className="preview-notice">Sample listings shown for preview. Replace with verified property details before launch.</p>}
         <PropertyCarousel properties={featured} />
