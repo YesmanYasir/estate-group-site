@@ -1,29 +1,17 @@
 ---
 name: agentation
-description: Use the Agentation visual-feedback toolbar to inspect and annotate this estate website during local UI and design review.
+description: Use the development-only Agentation toolbar to inspect and annotate the live Next.js estate website during visual review.
 license: PolyForm-Shield-1.0.0
 ---
 
-# Agentation for this project
+# Agentation visual feedback
 
-Agentation is installed as a development dependency and mounted only in the local visual-feedback preview. It is not part of the public website.
+Agentation is installed as a development dependency and mounted in the Next.js app only when `NODE_ENV=development`. It is omitted from production output.
 
-## Start the annotation preview
+## Workflow
+1. Run `npm run dev` from the repository root and open the local URL.
+2. Use Agentation to select the actual page element and record structured feedback.
+3. Copy its feedback into the coding agent prompt and update the matching source component/style.
+4. Verify the page again at desktop and phone sizes.
 
-1. From the repository root, run `npm install` if dependencies are not installed.
-2. Run `npm run dev:agentation` and open the local URL printed by Vite.
-3. Use the preview bar to switch between Home, Properties, Property detail, and Admin.
-4. Use Agentation's toolbar to click or select a page element and add a precise visual note.
-5. Copy the structured feedback and apply it to the corresponding source files. The preview iframe is same-origin so selectors and annotations can target the existing static pages.
-
-## Agent sync
-
-Manual copy/paste is the default. If the user explicitly requests live MCP sync, configure the existing coding agent with `npx -y agentation-mcp server`, point `<Agentation endpoint>` to the same HTTP URL, and verify an actual test annotation is readable by the agent. Do not claim live sync is enabled just because the package or server is present.
-
-## Constraints
-
-- Keep the Agentation toolbar and React preview shell development-only.
-- Do not mount Agentation in `site/*.html` or production bundles.
-- Do not migrate the public website to React just to use Agentation; the preview shell is an isolated React host for the static site.
-- Agentation requires React 18 or newer and desktop browser interaction.
-- If the tool cannot inspect an iframe element, provide the user with the copied feedback workflow and state what could not be verified.
+The toolbar supports local copy. Do not claim live MCP annotation sync unless a server is configured and a test annotation is read successfully.

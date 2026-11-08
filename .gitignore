@@ -1,7 +1,9 @@
-node_modules/
-studio/node_modules/
-studio/dist/
-.env
-.env.*
+node_modules
+.next
+.open-next
+.wrangler
+.dev.vars
+.env*
 !.env.example
 .DS_Store
+*.tsbuildinfo
