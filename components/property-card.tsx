@@ -2,18 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Property } from "@/types/property";
 import { formatPrice } from "@/lib/format";
-export function PropertyCard({ property, index = 0, compact = false }: { property: Property; index?: number; compact?: boolean }) {
+import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
+export function PropertyCard({ property, index = 0, compact = false, locale = "en" }: { property: Property; index?: number; compact?: boolean; locale?: Locale }) {
   return <article className={`property-card${compact ? " property-card-compact" : ""}`} style={{ "--card-index": index } as React.CSSProperties}>
-    <Link className="property-image" href={`/property/${property.slug}`} aria-label={`View ${property.title}`}>
+    <Link className="property-image" href={`/property/${property.slug}`} aria-label={`${t(locale,"details")}: ${property.title}`}>
       <Image src={property.coverUrl} alt={property.alt} fill sizes={compact ? "(max-width: 600px) 82vw, (max-width: 1100px) 38vw, 24vw" : "(max-width: 700px) 90vw, (max-width: 1100px) 45vw, 30vw"} />
-      <span className="image-index">0{index + 1} <i>—</i> {property.listingType === "rent" ? "For rent" : "For sale"}</span>
-      {property.demo && <span className="demo-tag">Preview listing</span>}
+      <span className="image-index">0{index + 1} <i>—</i> {property.listingType === "rent" ? t(locale,"rent") : property.listingType === "golden_visa" ? t(locale,"golden") : t(locale,"sale")}</span>
     </Link>
     <div className="property-meta"><div><p className="eyebrow">{property.city}</p><h3><Link href={`/property/${property.slug}`}>{property.title}</Link></h3></div><p className="price">{formatPrice(property.price, property.currency, property.listingType)}</p></div>
     <ul className="property-specs" aria-label="Property details">
-      <li><SpecIcon type="bed"/><span className="spec-value">{property.bedrooms}</span><span className="spec-label">Beds</span></li>
-      <li><SpecIcon type="bath"/><span className="spec-value">{property.bathrooms}</span><span className="spec-label">Baths</span></li>
-      <li><SpecIcon type="area"/><span className="spec-value">{property.area.toLocaleString("en-IE")}</span><span className="spec-label">m²</span></li>
+      <li><SpecIcon type="bed"/><span className="spec-value">{property.bedrooms}</span><span className="spec-label">{t(locale,"beds")}</span></li>
+      <li><SpecIcon type="bath"/><span className="spec-value">{property.bathrooms}</span><span className="spec-label">{t(locale,"baths")}</span></li>
+      <li><SpecIcon type="area"/><span className="spec-value">{property.area.toLocaleString(locale === "tr" ? "tr-TR" : locale === "el" ? "el-GR" : "en-IE")}</span><span className="spec-label">{t(locale,"areaSuffix")}</span></li>
       <li className="spec-detail-link"><Link href={`/property/${property.slug}`} aria-label={`View details for ${property.title}`} className="arrow-link"><ArrowIcon/></Link></li>
     </ul>
   </article>;

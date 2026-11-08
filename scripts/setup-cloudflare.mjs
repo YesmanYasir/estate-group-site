@@ -3,15 +3,15 @@ import { randomBytes } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
+import { fileURLToPath } from "node:url";
 
-const npx = process.platform === "win32" ? "npx.cmd" : "npx";
+const wranglerCli = fileURLToPath(new URL("../node_modules/wrangler/bin/wrangler.js", import.meta.url));
 function run(args, { input } = {}) {
   try {
-    return execFileSync(npx, ["wrangler", ...args], {
+    return execFileSync(process.execPath, [wranglerCli, ...args], {
       encoding: "utf8",
       input,
       stdio: ["pipe", "pipe", "pipe"],
-      shell: process.platform === "win32",
     });
   } catch (error) {
     const detail = [error.stdout, error.stderr, error.message].filter(Boolean).join("\n");
@@ -48,14 +48,14 @@ console.log("Applying the database schema…");
 run(["d1", "migrations", "apply", "estate-group", "--remote"]);
 
 const rl = createInterface({ input: stdin, output: stdout });
-const adminEmail = (await rl.question("Google account email allowed to manage listings: ")).trim().toLocaleLowerCase();
+const adminEmails = (await rl.question("Google admin email(s), comma-separated: ")).split(",").map((email) => email.trim().toLocaleLowerCase()).filter(Boolean);
 const googleClientId = (await rl.question("Google OAuth Client ID: ")).trim();
 const googleClientSecret = (await rl.question("Google OAuth Client secret: ")).trim();
 rl.close();
-if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminEmail)) throw new Error("Enter the Google email address that should have admin access, then run setup again.");
+if (!adminEmails.length || adminEmails.some((email) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) throw new Error("Enter one or more valid Google email addresses, separated by commas.");
 if (!googleClientId || !googleClientSecret) throw new Error("Enter the OAuth Client ID and secret from Google Cloud, then run setup again.");
 console.log("Saving the admin allowlist and Google OAuth credentials as Cloudflare Worker secrets…");
-run(["secret", "put", "ADMIN_EMAIL"], { input: `${adminEmail}\n` });
+run(["secret", "put", "ADMIN_EMAIL"], { input: `${adminEmails.join(",")}\n` });
 run(["secret", "put", "AUTH_GOOGLE_ID"], { input: `${googleClientId}\n` });
 run(["secret", "put", "AUTH_GOOGLE_SECRET"], { input: `${googleClientSecret}\n` });
 run(["secret", "put", "AUTH_SECRET"], { input: `${randomBytes(48).toString("base64url")}\n` });

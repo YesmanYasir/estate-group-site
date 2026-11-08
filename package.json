@@ -14,7 +14,7 @@
     "setup:skills": "node scripts/setup-skills.mjs",
     "setup:cloudflare": "node scripts/setup-cloudflare.mjs",
     "cf:preview": "opennextjs-cloudflare build && wrangler dev",
-    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf:deploy": "wrangler d1 migrations apply estate-group --remote && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf:typegen": "wrangler types"
   },
   "dependencies": {

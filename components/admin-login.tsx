@@ -19,12 +19,12 @@ export function AdminLogin({ denied = false }: { denied?: boolean }) {
   }
 
   return <div className="admin-login">
-    <div className="google-login-copy"><div><strong>Private property desk</strong><p>Sign in with the Google account authorized by the site owner.</p></div></div>
+    <div className="google-login-copy"><div><strong>Private property desk</strong><p>Google sign-in is open. Only authorized admin accounts can manage listings.</p></div></div>
     {error && <p role="alert" className="form-error">{error}</p>}
     <button className="google-signin" type="button" onClick={() => void continueWithGoogle()} disabled={busy}>
       <GoogleMark />{busy ? "Connecting to Google…" : "Continue with Google"}
     </button>
-    <small>Only the configured admin email can manage listings.</small>
+    <small>Google accounts can sign in; listing management remains restricted to authorized admins.</small>
   </div>;
 }
 

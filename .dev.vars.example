@@ -1,0 +1,4 @@
+ADMIN_EMAIL="admin-one@example.com,admin-two@example.com"
+AUTH_GOOGLE_ID="google-oauth-client-id"
+AUTH_GOOGLE_SECRET="google-oauth-client-secret"
+AUTH_SECRET="replace-with-at-least-32-random-characters"

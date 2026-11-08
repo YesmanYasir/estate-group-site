@@ -1,32 +1,26 @@
-# AIM Estate Group
+# Spitogo
 
-A lightweight, photo-led property website inspired by the supplied luxury-property reference: full-bleed hero photography, a clear search bar, featured homes, browse-by-type cards, listing details, and a visible admin sign-in. The implementation uses its own copy, identity, and imagery; it does not copy the reference site's source or assets.
+A photo-led property website for Greek homes, operated by Spitogo with BlueGreen Tourism. Public browsing includes distinct sale, rental and Golden Visa categories; owners can submit listings for administrator review. Cloudflare D1 stores listings and consultation requests, while R2 stores listing photos.
 
 ## Run locally
 
 1. Install Node.js 20.9 or newer.
-2. In this folder run `npm.cmd install` then `npm.cmd run dev` (works in Windows CMD and PowerShell even when the PowerShell script wrapper is disabled).
-3. Open `http://localhost:3000`. The homepage is `/`; the admin login is `/admin`.
+2. In this folder run `npm install` and `npm run dev`.
+3. Open `http://localhost:3000`; the public pages use clearly labelled preview homes until verified listings are added.
 
-The public pages use labeled preview listings until real properties are added. Admin access uses Google sign-in restricted to one owner-defined email. To test persistent admin listing creation locally, configure Cloudflare bindings and local secrets as described in [the setup guide](docs/free-deployment.md).
+## Google sign-in and admins
 
-## Technology
+Google sign-in is available to external Google accounts. Admin permissions remain limited to the comma-separated addresses in the Cloudflare `ADMIN_EMAIL` secret. For local Cloudflare preview, copy `.dev.vars.example` to `.dev.vars`, provide valid secrets and add localhost as an authorized Google OAuth origin and callback. Never commit `.dev.vars` or OAuth credentials.
 
-- Next.js App Router, React 19, TypeScript, and small custom CSS.
-- Cloudflare Workers + OpenNext for deployment, D1 for listings, and R2 for photos.
-- Auth.js Google OAuth for private admin access, restricted to one owner-configured Google email.
-- Native CSS and browser scrolling for transitions and carousels. No WebGL/3D or large animation framework is loaded by the public pages.
-- Vitest for unit tests. Agentation remains an optional development-only visual feedback tool.
-- Repository agent profiles live under `.github/agents/`; reusable UI and workflow skills live under `.agents/skills/`.
+## Main commands
 
-## Useful commands
-
-```cmd
-npm.cmd run dev
-npm.cmd test
-npm.cmd run build
-npm.cmd run cf:preview
-npm.cmd run cf:deploy
+```sh
+npm install
+npm run dev
+npm test
+npm run build
+npm run cf:preview
+npm run cf:deploy
 ```
 
-See [free deployment and admin setup](docs/free-deployment.md) before publishing. Replace sample listings and verify company contact details first.
+`cf:deploy` applies any pending remote D1 migrations, builds the Cloudflare Worker and deploys it. See [the deployment guide](docs/free-deployment.md) for OAuth, domain and admin setup.

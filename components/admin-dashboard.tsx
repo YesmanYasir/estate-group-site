@@ -1,107 +1,39 @@
 "use client";
-
 import { useEffect, useState, type FormEvent } from "react";
 import { signOut as authSignOut } from "next-auth/react";
-import type { Property, PropertyType } from "@/types/property";
+import type { Property,PropertyType } from "@/types/property";
+import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
 
-const emptyForm = {
-  title: "", city: "", listingType: "sale", propertyType: "Villa" as PropertyType,
-  price: "", coverUrl: "", description: "", bedrooms: "", bathrooms: "", area: "",
-  alt: "", features: "", status: "published",
-};
-const types: PropertyType[] = ["Apartment", "House", "Villa", "Penthouse", "Land", "Development"];
-
-export function AdminDashboard() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [form, setForm] = useState(emptyForm);
-  const [busy, setBusy] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
-
-  async function loadProperties() {
-    try {
-      const response = await fetch("/api/admin/properties");
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "The listing list could not be loaded.");
-      setProperties(data.properties || []);
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "The listing list could not be loaded.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  useEffect(() => { void loadProperties(); }, []);
-
-  async function upload(file: File) {
-    const data = new FormData();
-    data.set("file", file);
-    setMessage("Uploading photo…");
-    const response = await fetch("/api/admin/upload", { method: "POST", body: data });
-    const result = await response.json();
-    if (!response.ok) { setMessage(result.error || "The photo could not be uploaded."); return; }
-    setForm((current) => ({ ...current, coverUrl: result.url }));
-    setMessage("Photo ready.");
-  }
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSaving(true);
-    setMessage("");
-    const body = {
-      ...form,
-      alt: form.alt.trim() || `${form.title} in ${form.city}`,
-      price: Number(form.price), bedrooms: Number(form.bedrooms || 0),
-      bathrooms: Number(form.bathrooms || 0), area: Number(form.area || 0),
-      features: form.features.split(",").map((feature) => feature.trim()).filter(Boolean),
-    };
-    try {
-      const response = await fetch("/api/admin/properties", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "The property could not be saved.");
-      setProperties((current) => [data.property, ...current]);
-      setForm(emptyForm);
-      setMessage(body.status === "draft" ? "Draft saved. Publish it when you are ready." : "Property is now on the website.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "The property could not be saved.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function signOut() {
-    await authSignOut({ redirectTo: "/admin" });
-  }
-
-  async function togglePublication(property: Property) {
-    const status = property.status === "published" ? "draft" : "published";
-    const response = await fetch(`/api/admin/properties?id=${encodeURIComponent(property.id)}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ status }) });
-    const data = await response.json();
-    if (!response.ok) { setMessage(data.error || "The listing status could not be changed."); return; }
-    setProperties((current) => current.map((item) => item.id === property.id ? data.property : item));
-    setMessage(status === "published" ? "Property published." : "Property moved to drafts.");
-  }
-
-  return <div className="admin-layout">
-    <section className="admin-list" aria-labelledby="admin-list-title">
-      <div className="admin-list-heading"><div><p className="eyebrow">YOUR WEBSITE INVENTORY</p><h2 id="admin-list-title">Properties</h2></div><div className="admin-list-actions"><span>{properties.length} TOTAL</span><button type="button" onClick={signOut}>Sign out</button></div></div>
-      {busy ? <p>Loading properties…</p> : properties.length === 0 ? <p>No properties yet. Add the first one with the form.</p> : properties.map((property) => <article className="admin-row" key={property.id}><div><strong>{property.title}</strong><small>{property.city} · {formatPrice(property.price, property.currency, property.listingType)} · {property.status}</small></div><button type="button" onClick={() => void togglePublication(property)}>{property.status === "published" ? "Unpublish" : "Publish"}</button></article>)}
-    </section>
-    <section className="admin-form-wrap" aria-labelledby="admin-form-title">
-      <p className="eyebrow">ADD A HOME</p><h2 id="admin-form-title">Property details</h2>
-      <p className="admin-help">Enter the essentials, add a photo, then publish it to the website.</p>
-      <form className="admin-form" onSubmit={submit}>
-        <label>Property title<input required maxLength={120} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} placeholder="Villa by the sea" /></label>
-        <div className="form-pair"><label>Location<input required maxLength={120} value={form.city} onChange={(event) => setForm({ ...form, city: event.target.value })} placeholder="Paros, Greece" /></label><label>Property type<select value={form.propertyType} onChange={(event) => setForm({ ...form, propertyType: event.target.value as PropertyType })}>{types.map((type) => <option key={type}>{type}</option>)}</select></label></div>
-        <div className="form-pair"><label>Offer<select value={form.listingType} onChange={(event) => setForm({ ...form, listingType: event.target.value })}><option value="sale">For sale</option><option value="rent">For rent</option></select></label><label>Price (€)<input type="number" min="0" step="1" required value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} placeholder="850000" /></label></div>
-        <label>Property photo<input type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={(event) => { const file = event.target.files?.[0]; if (file) void upload(file); }} /><small>{form.coverUrl.startsWith("/api/media/") ? "Photo uploaded." : "Upload a photo up to 8 MB, or paste a direct HTTPS image link below."}</small></label>
-        <label>Or paste a photo link<input type="url" placeholder="https://…" value={form.coverUrl.startsWith("/api/media/") ? "" : form.coverUrl} onChange={(event) => setForm({ ...form, coverUrl: event.target.value })} /></label>
-        <label>Description<textarea rows={3} required maxLength={3000} value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} placeholder="Describe the home and what makes it special." /></label>
-        <details className="admin-optional"><summary>More details (optional)</summary><div className="form-pair"><label>Bedrooms<input type="number" min="0" value={form.bedrooms} onChange={(event) => setForm({ ...form, bedrooms: event.target.value })} /></label><label>Bathrooms<input type="number" min="0" value={form.bathrooms} onChange={(event) => setForm({ ...form, bathrooms: event.target.value })} /></label></div><label>Area in m²<input type="number" min="0" value={form.area} onChange={(event) => setForm({ ...form, area: event.target.value })} /></label><label>Features, separated by commas<input value={form.features} onChange={(event) => setForm({ ...form, features: event.target.value })} placeholder="Sea view, private garden" /></label><label>Visibility<select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}><option value="published">Publish immediately</option><option value="draft">Save as draft</option></select></label></details>
-        {message && <p role="status" className="form-message">{message}</p>}
-        <button className="button button-dark" disabled={saving}>{saving ? "Saving…" : form.status === "draft" ? "Save as draft" : "Add property to website"}</button>
-      </form>
-    </section>
-  </div>;
+type Enquiry={id:string;name:string;email:string;phone:string;message:string;created_at:string};
+const emptyForm={title:"",city:"",listingType:"sale",propertyType:"Villa" as PropertyType,price:"",description:"",bedrooms:"",bathrooms:"",area:"",alt:"",features:"",sourceUrl:"",status:"published"};
+const types:PropertyType[]=["Apartment","House","Villa","Penthouse","Land","Development"];
+export function AdminDashboard({locale="en"}:{locale?:Locale}){
+ const [properties,setProperties]=useState<Property[]>([]),[enquiries,setEnquiries]=useState<Enquiry[]>([]),[form,setForm]=useState(emptyForm),[photos,setPhotos]=useState<string[]>([]);
+ const [busy,setBusy]=useState(true),[saving,setSaving]=useState(false),[uploading,setUploading]=useState(false),[message,setMessage]=useState("");
+ async function loadProperties(){try{const [propertyResponse,enquiryResponse]=await Promise.all([fetch("/api/admin/properties"),fetch("/api/admin/golden-visa-enquiries")]);const data=await propertyResponse.json();if(!propertyResponse.ok)throw new Error(data.error||"The listings could not be loaded.");setProperties(data.properties||[]);const enquiryData=await enquiryResponse.json();setEnquiries(enquiryData.enquiries||[]);}catch(error){setMessage(error instanceof Error?error.message:"The lists could not be loaded.");}finally{setBusy(false);}}
+ useEffect(()=>{void loadProperties();},[]);
+ async function upload(files:FileList|null){if(!files?.length)return;const chosen=Array.from(files).slice(0,Math.max(0,8-photos.length));if(!chosen.length){setMessage("You can add up to eight photos.");return;}setUploading(true);setMessage("");try{for(const file of chosen){const data=new FormData();data.set("file",file);const response=await fetch("/api/admin/upload",{method:"POST",body:data});const result=await response.json();if(!response.ok)throw new Error(result.error||"Upload failed.");setPhotos(current=>[...current,result.url]);}}catch(error){setMessage(error instanceof Error?error.message:"The photo could not be uploaded.");}finally{setUploading(false);}}
+ async function submit(event:FormEvent<HTMLFormElement>){event.preventDefault();if(!photos.length){setMessage("Add at least one property photo.");return;}setSaving(true);setMessage("");const body={...form,coverUrl:photos[0],images:photos,alt:form.alt.trim()||form.title+" in "+form.city,price:Number(form.price),bedrooms:Number(form.bedrooms||0),bathrooms:Number(form.bathrooms||0),area:Number(form.area||0),features:form.features.split(",").map((x)=>x.trim()).filter(Boolean)};try{const response=await fetch("/api/admin/properties",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw new Error(data.error||"The property could not be saved.");setProperties(current=>[data.property,...current]);setForm(emptyForm);setPhotos([]);setMessage(body.status==="draft"?"Draft saved.":"Property published.");}catch(error){setMessage(error instanceof Error?error.message:"The property could not be saved.");}finally{setSaving(false);}}
+ async function setStatus(property:Property,status:"draft"|"published"){const response=await fetch("/api/admin/properties?id="+encodeURIComponent(property.id),{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({status})});const data=await response.json();if(!response.ok){setMessage(data.error||"The listing status could not be changed.");return;}setProperties(current=>current.map(item=>item.id===property.id?data.property:item));}
+ async function signOut(){await authSignOut({redirectTo:"/admin"});}
+ return <div className="admin-layout">
+  <section className="admin-list" aria-labelledby="admin-list-title"><div className="admin-list-heading"><div><p className="eyebrow">SPITOGO · PRIVATE DESK</p><h2 id="admin-list-title">Properties</h2></div><div className="admin-list-actions"><span>{properties.length} TOTAL</span><button type="button" onClick={signOut}>Sign out</button></div></div>
+   {busy?<p>Loading listings…</p>:properties.length===0?<p>No listings yet.</p>:properties.map(property=><article className="admin-row" key={property.id}><div><strong>{property.title}</strong><small>{property.city} · {formatPrice(property.price,property.currency,property.listingType)} · {property.listingType==="golden_visa"?t(locale,"golden"):property.listingType} · {property.status}</small>{property.status==="pending"&&<small>{t(locale,"pending")} · {property.submittedName||property.submittedBy}</small>}</div><div className="admin-row-actions">{property.status==="pending"?<><button type="button" onClick={()=>void setStatus(property,"published")}>{t(locale,"approve")}</button><button type="button" onClick={()=>void setStatus(property,"draft")}>{t(locale,"reject")}</button></>:<button type="button" onClick={()=>void setStatus(property,property.status==="published"?"draft":"published")}>{property.status==="published"?"Unpublish":"Publish"}</button>}</div></article>)}
+  </section>
+  <section className="admin-form-wrap" aria-labelledby="admin-form-title"><p className="eyebrow">ADD A HOME</p><h2 id="admin-form-title">{t(locale,"details")}</h2><p className="admin-help">Publish your own verified listing or save it as a draft.</p>
+   <form className="admin-form" onSubmit={submit}>
+    <label>{t(locale,"title")}<input required maxLength={120} value={form.title} onChange={event=>setForm({...form,title:event.target.value})}/></label>
+    <div className="form-pair"><label>{t(locale,"location")}<input required maxLength={120} value={form.city} onChange={event=>setForm({...form,city:event.target.value})}/></label><label>{t(locale,"propertyType")}<select value={form.propertyType} onChange={event=>setForm({...form,propertyType:event.target.value as PropertyType})}>{types.map(type=><option key={type}>{type}</option>)}</select></label></div>
+    <div className="form-pair"><label>{t(locale,"offer")}<select value={form.listingType} onChange={event=>setForm({...form,listingType:event.target.value})}><option value="sale">{t(locale,"sale")}</option><option value="rent">{t(locale,"rent")}</option><option value="golden_visa">{t(locale,"golden")}</option></select></label><label>{t(locale,"price")}<input required type="number" min="0" step="1" value={form.price} onChange={event=>setForm({...form,price:event.target.value})}/></label></div>
+    <label>{t(locale,"photos")}<input type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple disabled={uploading||photos.length>=8} onChange={event=>void upload(event.target.files)}/><small>{uploading?"Uploading…":photos.length+" / 8"}</small></label>
+    {photos.length>0&&<div className="uploaded-photo-list">{photos.map((photo,index)=><div key={photo}><span>Photo {index+1}</span><button type="button" onClick={()=>setPhotos(current=>current.filter(item=>item!==photo))} aria-label={"Remove photo "+(index+1)}>×</button></div>)}</div>}
+    <label>{t(locale,"description")}<textarea rows={4} required maxLength={3000} value={form.description} onChange={event=>setForm({...form,description:event.target.value})}/></label>
+    <details className="admin-optional"><summary>{t(locale,"detailsOptional")}</summary><div className="form-pair"><label>{t(locale,"beds")}<input type="number" min="0" value={form.bedrooms} onChange={event=>setForm({...form,bedrooms:event.target.value})}/></label><label>{t(locale,"baths")}<input type="number" min="0" value={form.bathrooms} onChange={event=>setForm({...form,bathrooms:event.target.value})}/></label></div><label>{t(locale,"area")} ({t(locale,"areaSuffix")})<input type="number" min="0" value={form.area} onChange={event=>setForm({...form,area:event.target.value})}/></label><label>Features<input value={form.features} onChange={event=>setForm({...form,features:event.target.value})} placeholder="Sea view, private garden"/></label><label>Source listing URL<input type="url" value={form.sourceUrl} onChange={event=>setForm({...form,sourceUrl:event.target.value})} placeholder="https://..."/></label><label>Visibility<select value={form.status} onChange={event=>setForm({...form,status:event.target.value})}><option value="published">Publish immediately</option><option value="draft">Save as draft</option></select></label></details>
+    {message&&<p role="status" className="form-message">{message}</p>}<button className="button button-dark" disabled={saving||uploading}>{saving?"Saving…":form.status==="draft"?"Save as draft":"Publish property"}</button>
+   </form>
+  </section>
+  <section className="admin-enquiries" aria-labelledby="enquiries-title"><p className="eyebrow">GOLDEN VISA</p><h2 id="enquiries-title">Consultation requests <span>{enquiries.length}</span></h2>{enquiries.length===0?<p>No requests yet.</p>:enquiries.map(item=><article key={item.id}><div><strong>{item.name}</strong><small>{item.email} · {item.phone}</small><p>{item.message}</p></div><time>{new Date(item.created_at+"Z").toLocaleDateString(locale==="tr"?"tr-TR":locale==="el"?"el-GR":"en-GB")}</time></article>)}</section>
+ </div>;
 }

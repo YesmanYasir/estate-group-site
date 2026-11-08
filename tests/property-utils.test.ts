@@ -36,6 +36,8 @@ describe("listing input validation", () => {
 
   it("accepts a complete listing with a secure photo URL", () => {
     expect(validatePropertyDraft(validListing)).toBeNull();
+    expect(validatePropertyDraft({ ...validListing, listingType: "golden_visa", images: ["https://example.com/1.jpg", "https://example.com/2.jpg"] })).toBeNull();
+    expect(validatePropertyDraft({ ...validListing, images: Array(9).fill("https://example.com/home.jpg") })).toMatch(/eight/i);
   });
 
   it("rejects a missing required field and an unsafe photo URL", () => {
@@ -58,5 +60,6 @@ describe("admin access allowlist", () => {
     expect(isConfiguredAdmin("someone@example.com", "owner@example.com", true)).toBe(false);
     expect(isConfiguredAdmin("owner@example.com", "owner@example.com", false)).toBe(false);
     expect(isConfiguredAdmin("owner@example.com", "", true)).toBe(false);
+    expect(isConfiguredAdmin("BlueGreen@example.com", "owner@example.com, bluegreen@example.com", true)).toBe(true);
   });
 });
