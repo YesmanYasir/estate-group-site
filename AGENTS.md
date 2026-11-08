@@ -18,3 +18,8 @@ Build a high-quality, multilingual-ready property discovery website with listing
 - Keep external images replaceable from the CMS; add useful alt text and avoid fake availability claims.
 - Put repeatable agent workflows in `.agents/skills/`. Use reviewer agents for bounded, read-only audits.
 - Before delivery, inspect the changed pages at desktop and narrow mobile widths, and report any unverified external setup steps.
+
+## Always-on coding skill
+- At the start of every coding, design, review, or maintenance task in this repository, read and apply `.agents/skills/karpathy-guidelines/SKILL.md` before planning or changing files.
+- Apply it throughout the full project lifecycle; the user does not need to repeat this instruction in each prompt.
+- This is a project-level instruction for any coding agent that reads `AGENTS.md`; it does not replace tests, browser checks, or human review.
