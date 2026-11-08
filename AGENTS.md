@@ -23,3 +23,7 @@ Build a high-quality, multilingual-ready property discovery website with listing
 - At the start of every coding, design, review, or maintenance task in this repository, read and apply `.agents/skills/karpathy-guidelines/SKILL.md` before planning or changing files.
 - Apply it throughout the full project lifecycle; the user does not need to repeat this instruction in each prompt.
 - This is a project-level instruction for any coding agent that reads `AGENTS.md`; it does not replace tests, browser checks, or human review.
+
+## Visual feedback workflow
+- For UI/design feedback tasks, use the Agentation development preview (`npm run dev:agentation`) when practical. It runs the existing static site in a same-origin iframe so Agentation can identify elements and collect structured annotations.
+- Agentation is a development-only tool and must not be added to the public site. Read `.agents/skills/agentation/SKILL.md` before changing or troubleshooting this setup.
