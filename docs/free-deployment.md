@@ -7,7 +7,7 @@ The domain registration remains with your current registrar. Cloudflare account 
 2. Install dependencies: `npm install`. Create a D1 database named `estate-group` and an R2 bucket named `estate-group-media`.
 3. Replace the placeholder `database_id` in `wrangler.jsonc` with the ID shown in the Cloudflare dashboard.
 4. Apply schema: `npx wrangler d1 migrations apply estate-group --remote`.
-5. Configure `ADMIN_PASSWORD` and `SESSION_SECRET` as Worker secrets using `npx wrangler secret put ADMIN_PASSWORD` and `npx wrangler secret put SESSION_SECRET`. Use a unique long password and a random secret of at least 32 characters. For local work copy `.dev.vars.example` to `.dev.vars` and change both values. Never commit `.dev.vars`.
+5. Configure `ADMIN_PASSWORD` and `SESSION_SECRET` as Worker secrets using `npx wrangler secret put ADMIN_PASSWORD` and `npx wrangler secret put SESSION_SECRET`. Use a unique long password and a random secret of at least 32 characters. For local work copy `.dev.vars.example` to `.dev.vars` and change both values. Never commit `.dev.vars`. Apply the local schema with `npx wrangler d1 migrations apply estate-group --local` before testing admin persistence. Login attempts are limited to 8 per IP per 15 minutes when D1 is connected.
 6. Local preview: `npm run dev` (Next.js) or `npm run cf:preview` (production-like Worker runtime).
 7. Deploy using `npm run cf:deploy`, or connect GitHub to Cloudflare Workers Builds and use `npm run cf:deploy` as the build/deploy command.
 8. Add the custom domain in Workers & Pages after deployment. Confirm certificate and canonical host.

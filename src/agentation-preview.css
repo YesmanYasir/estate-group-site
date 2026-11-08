@@ -1,0 +1,61 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  color: #f6f4ed;
+  background: #17231d;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; height: 100%; margin: 0; }
+body { overflow: hidden; }
+
+.preview-shell {
+  display: grid;
+  grid-template-rows: 64px minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+.preview-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 24px;
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+  background: #17231d;
+}
+
+.preview-brand { display: flex; align-items: center; gap: 11px; min-width: 210px; }
+.preview-mark { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid #c3a575; color: #e8c990; font-family: Georgia, serif; font-size: 20px; }
+.preview-brand strong, .preview-brand small { display: block; }
+.preview-brand strong { font-family: Georgia, serif; font-size: 14px; font-weight: 500; letter-spacing: .04em; }
+.preview-brand small { margin-top: 4px; color: #a7ad9e; font-size: 8px; letter-spacing: .14em; }
+
+.preview-pages { display: flex; align-items: center; gap: 5px; }
+.preview-pages button, .open-site {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: #d7d8d0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  padding: 9px 12px;
+  text-decoration: none;
+}
+.preview-pages button:hover, .preview-pages button.selected { border-color: rgb(195 165 117 / 40%); color: #e8c990; }
+.open-site { border-color: rgb(255 255 255 / 20%); white-space: nowrap; }
+.open-site:hover { border-color: #c3a575; color: #e8c990; }
+
+.site-frame { width: 100%; height: 100%; border: 0; background: #f5f3ed; }
+
+@media (max-width: 700px) {
+  .preview-bar { gap: 8px; padding: 0 10px; }
+  .preview-brand { min-width: 0; }
+  .preview-brand small { display: none; }
+  .preview-pages { gap: 0; overflow-x: auto; }
+  .preview-pages button { padding: 8px 7px; font-size: 10px; white-space: nowrap; }
+  .open-site { padding: 8px 7px; font-size: 10px; }
+}

@@ -7,7 +7,7 @@ A premium, editorial property-discovery website with an accessible Three.js/R3F 
 - Node.js 20.9+
 - `npm install`
 - Copy `.dev.vars.example` to `.dev.vars` and choose private secrets.
-- Configure local Cloudflare resources in `wrangler.jsonc` and apply migrations, or run `npm run dev` to preview the demo fallback content.
+- Configure local Cloudflare resources in `wrangler.jsonc`, copy `.dev.vars.example` to `.dev.vars`, and apply the D1 migration with `npx wrangler d1 migrations apply estate-group --local`. Without migration data the public pages still show preview listings, but admin saves are not available.
 - Open `http://localhost:3000`; admin is at `/admin`.
 
 For full-stack deployment steps see [`docs/free-deployment.md`](docs/free-deployment.md). The current demo listings are illustrative and must be replaced with owner-verified details before launch.

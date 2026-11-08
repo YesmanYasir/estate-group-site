@@ -11,7 +11,7 @@
 - [ ] Reduced-motion keeps content visible and usable; non-WebGL fallback renders.
 
 ## Security and operations
-- [ ] `ADMIN_PASSWORD` and `SESSION_SECRET` are configured as runtime secrets.
+- [ ] `ADMIN_PASSWORD` and `SESSION_SECRET` are configured as runtime secrets; login attempts are throttled.
 - [ ] D1 migrations are applied; R2 upload bucket exists; upload and draft/public visibility are verified.
 - [ ] Email/DNS records are preserved while connecting the custom domain.
 - [ ] Preview locally before deployment; verify Cloudflare production preview with Wrangler before launch.

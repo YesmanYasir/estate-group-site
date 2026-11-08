@@ -1,7 +1,7 @@
 ---
 name: frontend-design
 description: Create distinctive, accessible React and Tailwind interfaces with strong visual hierarchy and polished, working behavior.
-license: Apache-2.0; based on better-react-web-ui, which includes attribution to Anthropic's frontend-design skill.
+license: See LICENSE and NOTICE.md (better-react-web-ui License).
 metadata:
   source: https://github.com/aladicf/better-react-web-ui/tree/main/skills/frontend-design
   argument-hint: "[page, flow, or component]"

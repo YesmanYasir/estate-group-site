@@ -18,3 +18,9 @@ CREATE TABLE IF NOT EXISTS properties (
   updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_properties_public ON properties(status, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS admin_login_attempts (
+  ip TEXT NOT NULL,
+  attempted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_admin_login_attempts_time ON admin_login_attempts(ip, attempted_at);
