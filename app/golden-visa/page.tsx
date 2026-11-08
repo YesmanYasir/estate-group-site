@@ -19,6 +19,6 @@ export default async function GoldenVisaPage(){
       <p className="visa-legal-note">{t(locale,"noGuarantee")} <a href="https://diavgeia.gov.gr/doc/%CE%A8%CE%A3%99746%CE%9C%CE%94%CE%A8%CE%9F-%CE%94%CE%A7%CE%9C" target="_blank" rel="noreferrer">{t(locale,"legalSource")} ↗</a></p>
     </section>
     <section className="visa-listings"><div className="visa-section-heading"><p className="eyebrow">{t(locale,"golden")}</p><h2>{t(locale,"opportunities")}</h2><p>{t(locale,"opportunitiesCopy")}</p></div><Link className="button button-dark" href="/properties?type=sale">{t(locale,"exploreHomes")} ↗</Link></section>
-    <section className="visa-enquiry" id="visa-enquiry"><div><p className="eyebrow">{t(locale,"contact")}</p><h2>{t(locale,"start")}</h2><p>{t(locale,"noGuarantee")}</p><p><a href="tel:+306975672933">{t(locale,"phone")}</a><br/><a href="mailto:bluegreentouring@gmail.com">{t(locale,"email")}</a></p></div><GoldenVisaEnquiry locale={locale}/></section>
+    <section className="visa-enquiry" id="visa-enquiry"><div><p className="eyebrow">{t(locale,"contact")}</p><h2>{t(locale,"start")}</h2><p>{t(locale,"noGuarantee")}</p><p><a href="mailto:bluegreentouring@gmail.com?subject=Property%20enquiry">{t(locale,"phone")}</a><br/><a href="mailto:bluegreentouring@gmail.com">{t(locale,"email")}</a></p></div><GoldenVisaEnquiry locale={locale}/></section>
   </main><SiteFooter locale={locale}/></>;
 }
